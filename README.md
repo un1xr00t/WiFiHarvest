@@ -1,4 +1,3 @@
-```markdown
 # WiFiHarvest
 
 An Android app for scanning and logging nearby Wi-Fi networks along with their GPS coordinates.
