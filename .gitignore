@@ -1,0 +1,40 @@
+# Build output
+/build/
+*.apk
+*.aab
+output-metadata.json
+
+# Java/ART/NDK
+*.dex
+*.class
+*.hprof
+*.log
+
+# IntelliJ/Android Studio
+*.iml
+.idea/
+.gradle/
+captures/
+.externalNativeBuild/
+.cxx/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Signing/Keystore
+*.jks
+*.keystore
+
+# Android local config
+local.properties
+
+# Google Services (Firebase, etc.)
+google-services.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor/Temp files
+*.swp
+*~.nib
