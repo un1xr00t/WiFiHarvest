@@ -52,8 +52,8 @@
 31        android:supportsRtl="true"
 31-->/home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:14:9-35
 32        android:testOnly="true"
-33        android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-33-->/home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:15:9-65
+33        android:theme="@style/Theme.WiFiHarvest" >
+33-->/home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:15:9-49
 34        <activity
 34-->/home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:16:9-24:20
 35            android:name="com.app.wifiharvest.MainActivity"

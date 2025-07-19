@@ -6,7 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class WifiLogEntry(val ssid: String, val bssid: String, val latitude: Double?, val longitude: Double?)
+data class WifiLogEntry(
+    val ssid: String,
+    val bssid: String,
+    val address: String? = null
+)
+
 
 class WifiLogAdapter : RecyclerView.Adapter<WifiLogAdapter.ViewHolder>() {
     private val data = mutableListOf<WifiLogEntry>()
@@ -17,20 +22,22 @@ class WifiLogAdapter : RecyclerView.Adapter<WifiLogAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false)
-        return ViewHolder(v)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_wifi_log, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val entry = data[position]
-        holder.line1.text = "${entry.ssid} (${entry.bssid})"
-        holder.line2.text = "Lat: ${entry.latitude}, Lng: ${entry.longitude}"
+        holder.ssidBssid.text = "${entry.ssid} (${entry.bssid})"
+        holder.address.text = entry.address ?: "Locating..."
     }
 
     override fun getItemCount(): Int = data.size
 
+
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val line1: TextView = v.findViewById(android.R.id.text1)
-        val line2: TextView = v.findViewById(android.R.id.text2)
+        val ssidBssid: TextView = v.findViewById(R.id.ssid_bssid)
+        val address: TextView = v.findViewById(R.id.address)
     }
 }

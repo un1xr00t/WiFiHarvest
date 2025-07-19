@@ -1,10 +1,14 @@
 R_DEF: Internal format may change without notice
 local
 drawable ic_launcher_background
+id address
 id recyclerView
+id ssid_bssid
 id startButton
 id stopButton
 layout activity_main
+layout item_wifi_log
 mipmap ic_launcher
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
+style Theme.WiFiHarvest
