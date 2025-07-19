@@ -1,16 +1,15 @@
 package com.app.wifiharvest
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.app.wifiharvest.WifiLogAdapter
-import com.app.wifiharvest.WifiScanner
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.app.wifiharvest.fragments.MapFragment
+import androidx.lifecycle.ViewModelProvider
+
 
 private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
@@ -44,8 +43,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = WifiLogAdapter()
+        adapter = WifiLogAdapter(mutableListOf<WifiLogEntry>())
         locationHelper = LocationHelper(this)
-        wifiScanner = WifiScanner(this, adapter, locationHelper)  // ✅ this comes before scan call
+        val viewModel = ViewModelProvider(this)[SharedWifiViewModel::class.java] // ✅ add this
+        wifiScanner = WifiScanner(this, adapter, locationHelper, viewModel) // ✅ fix this
+
+        val navController = findNavController(R.id.fragment_container)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        NavigationUI.setupWithNavController(bottomNav, navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.nav_map -> {
+                    val mapFragment = supportFragmentManager
+                        .primaryNavigationFragment
+                        ?.childFragmentManager
+                        ?.fragments
+                        ?.firstOrNull { it is MapFragment }
+
+                    if (mapFragment is WifiScanListener) {
+                        wifiScanner.setScanListener(mapFragment)
+                        wifiScanner.pushLastScanToListener() // ✅ immediately show last scan
+                    } else {
+                        wifiScanner.setScanListener(null)
+                    }
+                }
+
+                else -> wifiScanner.setScanListener(null)
+            }
+        }
+
+        bottomNav.selectedItemId = R.id.nav_feed
     }
 }
+

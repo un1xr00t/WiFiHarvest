@@ -16,7 +16,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Inject debug API key from local.properties
+            manifestPlaceholders["MAPS_API_KEY"] = project.findProperty("MAPS_API_KEY") ?: ""
+        }
+
         release {
+            // Use the hardcoded API key in AndroidManifest.xml
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -47,6 +53,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 }
 
 configurations.all {

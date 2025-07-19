@@ -13,9 +13,9 @@ data class WifiLogEntry(
     val location: String? = null  // Optional location
 )
 
-class WifiLogAdapter : RecyclerView.Adapter<WifiLogAdapter.LogViewHolder>() {
-
-    private val wifiLogs = mutableListOf<WifiLogEntry>()
+class WifiLogAdapter(
+    private val wifiLogs: MutableList<WifiLogEntry>
+) : RecyclerView.Adapter<WifiLogAdapter.LogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,6 +32,12 @@ class WifiLogAdapter : RecyclerView.Adapter<WifiLogAdapter.LogViewHolder>() {
     fun addLog(entry: WifiLogEntry) {
         wifiLogs.add(entry)
         notifyItemInserted(wifiLogs.size - 1)
+    }
+
+    fun updateData(newLogs: List<WifiLogEntry>) {
+        wifiLogs.clear()
+        wifiLogs.addAll(newLogs)
+        notifyDataSetChanged()
     }
 
     inner class LogViewHolder(view: View) : RecyclerView.ViewHolder(view) {

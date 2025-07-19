@@ -5,6 +5,7 @@ id address
 id bottom_nav
 id fragment_container
 id liveFeedContainer
+id mapView
 id nav_charts
 id nav_export
 id nav_feed
@@ -16,10 +17,12 @@ id startButton
 id stopButton
 layout activity_main
 layout fragment_live_feed
+layout fragment_map
 layout item_wifi_log
 menu bottom_nav_menu
 mipmap ic_launcher
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
 navigation nav_graph
+string google_maps_key
 style Theme.WiFiHarvest

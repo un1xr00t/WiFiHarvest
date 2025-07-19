@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.app.wifiharvest.R;
@@ -23,14 +22,10 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final BottomNavigationView bottomNav;
 
-  @NonNull
-  public final FragmentContainerView fragmentContainer;
-
   private ActivityMainBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull BottomNavigationView bottomNav, @NonNull FragmentContainerView fragmentContainer) {
+      @NonNull BottomNavigationView bottomNav) {
     this.rootView = rootView;
     this.bottomNav = bottomNav;
-    this.fragmentContainer = fragmentContainer;
   }
 
   @Override
@@ -66,13 +61,7 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.fragment_container;
-      FragmentContainerView fragmentContainer = ViewBindings.findChildViewById(rootView, id);
-      if (fragmentContainer == null) {
-        break missingId;
-      }
-
-      return new ActivityMainBinding((CoordinatorLayout) rootView, bottomNav, fragmentContainer);
+      return new ActivityMainBinding((CoordinatorLayout) rootView, bottomNav);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

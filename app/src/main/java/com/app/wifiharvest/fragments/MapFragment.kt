@@ -1,4 +1,4 @@
-package com.app.wifiharvest
+package com.app.wifiharvest.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.app.wifiharvest.R
+import com.app.wifiharvest.SharedWifiViewModel
 import com.app.wifiharvest.databinding.FragmentMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.app.wifiharvest.WifiScanListener
+import com.google.android.gms.location.LocationServices
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, WifiScanListener {
@@ -40,15 +43,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, WifiScanListener {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        viewModel.networks.observe(viewLifecycleOwner) { list ->
-            map.clear()
-            for (network in list) {
-                val position = LatLng(network.latitude, network.longitude)
-                val marker = MarkerOptions().position(position).title(network.ssid)
-                map.addMarker(marker)
+        LocationServices.getFusedLocationProviderClient(requireContext())
+            .lastLocation
+            .addOnSuccessListener { location ->
+                location?.let {
+                    val myLatLng = LatLng(it.latitude, it.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16f))
+                    map.addMarker(
+                        MarkerOptions()
+                            .position(myLatLng)
+                            .title("You are here")
+                    )
+                }
             }
 
-            // Optional: auto-focus to last scanned network
+        viewModel.networks.observe(viewLifecycleOwner) { list ->
+            map.clear()
+
+            // Drop all markers
+            for (network in list) {
+                val latLng = LatLng(network.latitude, network.longitude)
+                map.addMarker(MarkerOptions().position(latLng).title(network.ssid))
+            }
+
+            // Optional: Focus camera on the most recent scan
             list.lastOrNull()?.let {
                 val focus = LatLng(it.latitude, it.longitude)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(focus, 16f))

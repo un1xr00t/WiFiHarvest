@@ -30,6 +30,7 @@ local.properties
 
 # Google Services (Firebase, etc.)
 google-services.json
+app/src/main/res/values/google_maps_api.xml
 
 # OS
 .DS_Store
@@ -38,3 +39,4 @@ Thumbs.db
 # Editor/Temp files
 *.swp
 *~.nib
+

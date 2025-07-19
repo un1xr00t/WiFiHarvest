@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-26:12
-INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-26:12
-INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-26:12
-INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-26:12
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-31:12
+INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-31:12
+INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-31:12
+INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:1:1-31:12
 MERGED from [androidx.databinding:viewbinding:8.3.0] /home/elliot/.gradle/caches/transforms-4/6e20736bf312562ea04721d5245c6c6d/transformed/jetified-viewbinding-8.3.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-common:2.7.7] /home/elliot/.gradle/caches/transforms-4/ef79e4decd5939cbd8769f217591019b/transformed/navigation-common-2.7.7/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.7.7] /home/elliot/.gradle/caches/transforms-4/f731d6eb9a83aeac0470d1e6efc493ed/transformed/navigation-common-ktx-2.7.7/AndroidManifest.xml:2:1-7:12
@@ -17,6 +17,7 @@ MERGED from [com.google.android.material:material:1.11.0] /home/elliot/.gradle/c
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/elliot/.gradle/caches/transforms-4/2f71309219d9d30581dd6b0918dd23f9/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/elliot/.gradle/caches/transforms-4/4cb1c8d937fd4a2a0ba86b30d8cc3d86/transformed/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /home/elliot/.gradle/caches/transforms-4/e9d775645bcbbaa4e403b116cbfc0364/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:17:1-44:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/elliot/.gradle/caches/transforms-4/bb1858945612910a76aba7e497cb07d0/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/elliot/.gradle/caches/transforms-4/914d6a8ed522870dcac8da12c4015600/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/elliot/.gradle/caches/transforms-4/9c5f3a4592537279fa9f1bc52a092274/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
@@ -95,12 +96,14 @@ ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidM
 	android:name
 		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:7:22-82
 application
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:9:5-25:19
-INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:9:5-25:19
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:9:5-30:19
+INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:9:5-30:19
 MERGED from [com.google.android.material:material:1.11.0] /home/elliot/.gradle/caches/transforms-4/ecd391702871f4c3ab2812691f997e0d/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] /home/elliot/.gradle/caches/transforms-4/ecd391702871f4c3ab2812691f997e0d/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/elliot/.gradle/caches/transforms-4/4cb1c8d937fd4a2a0ba86b30d8cc3d86/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/elliot/.gradle/caches/transforms-4/4cb1c8d937fd4a2a0ba86b30d8cc3d86/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/elliot/.gradle/caches/transforms-4/914d6a8ed522870dcac8da12c4015600/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/elliot/.gradle/caches/transforms-4/914d6a8ed522870dcac8da12c4015600/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/elliot/.gradle/caches/transforms-4/9c5f3a4592537279fa9f1bc52a092274/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
@@ -139,22 +142,28 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /home/elliot/.gradle/caches
 		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:10:9-35
 	android:theme
 		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:15:9-49
+meta-data#com.google.android.geo.API_KEY
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:17:9-19:55
+	android:value
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:19:13-52
+	android:name
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:18:13-58
 activity#com.app.wifiharvest.MainActivity
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:16:9-24:20
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:21:9-29:20
 	android:exported
-		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:18:13-36
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:23:13-36
 	android:name
-		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:17:13-41
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:22:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:20:13-23:29
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:25:13-28:29
 action#android.intent.action.MAIN
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:21:17-68
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:26:17-68
 	android:name
-		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:21:25-66
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:26:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:22:17-76
+ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:27:17-76
 	android:name
-		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:22:27-74
+		ADDED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml:27:27-74
 uses-sdk
 INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml
@@ -185,6 +194,8 @@ MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/elliot/.gra
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/elliot/.gradle/caches/transforms-4/4cb1c8d937fd4a2a0ba86b30d8cc3d86/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.appcompat:appcompat:1.6.1] /home/elliot/.gradle/caches/transforms-4/e9d775645bcbbaa4e403b116cbfc0364/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /home/elliot/.gradle/caches/transforms-4/e9d775645bcbbaa4e403b116cbfc0364/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/elliot/.gradle/caches/transforms-4/bb1858945612910a76aba7e497cb07d0/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/elliot/.gradle/caches/transforms-4/bb1858945612910a76aba7e497cb07d0/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/elliot/.gradle/caches/transforms-4/914d6a8ed522870dcac8da12c4015600/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:5:5-44
@@ -287,6 +298,32 @@ MERGED from [androidx.annotation:annotation-experimental:1.3.0] /home/elliot/.gr
 		INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from /home/elliot/Documents/Android Apps/WiFiHarvest/app/src/main/AndroidManifest.xml
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:22-76
+uses-permission#android.permission.INTERNET
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:22-64
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:26:5-28:35
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:27:9-41
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:28:9-32
+queries
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:30:5-34:15
+package#com.google.android.apps.maps
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:33:9-64
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:33:18-61
+uses-library#org.apache.http.legacy
+ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:39:9-41:40
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:41:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/elliot/.gradle/caches/transforms-4/b5dd9707eea9b02753f33c6cc3769a12/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:40:13-50
 activity#com.google.android.gms.common.api.GoogleApiActivity
 ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/elliot/.gradle/caches/transforms-4/9c5f3a4592537279fa9f1bc52a092274/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
 	android:exported

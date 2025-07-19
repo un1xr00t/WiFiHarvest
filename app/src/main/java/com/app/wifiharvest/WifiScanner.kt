@@ -4,66 +4,79 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import kotlinx.coroutines.*
-import java.util.concurrent.CopyOnWriteArrayList
+import com.google.android.gms.location.LocationServices
 
 class WifiScanner(
     private val context: Context,
     private val adapter: WifiLogAdapter,
-    private val locationHelper: LocationHelper
+    private val locationHelper: LocationHelper,
+    private val viewModel: SharedWifiViewModel
 ) {
     private val wifiManager =
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private val seenEntries = CopyOnWriteArrayList<WifiLogEntry>()
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private var scanListener: WifiScanListener? = null
+    private val seenBssids = mutableSetOf<String>()
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
-            val results = wifiManager.scanResults
+            if (intent?.action == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
+                val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
+                if (success) {
+                    processScanResults(wifiManager.scanResults)
+                } else {
+                    processScanResults(wifiManager.scanResults) // fallback
+                }
+            }
+        }
+    }
 
-            locationHelper.getCurrentLocation { location ->
-                val lat = location?.latitude
-                val lng = location?.longitude
+    private fun processScanResults(results: List<ScanResult>) {
+        locationHelper.getCurrentLocation { location ->
+            if (location == null) return@getCurrentLocation
 
-                if (lat != null && lng != null) {
-                    locationHelper.getAddressFromLocation(lat, lng) { address ->
-                        results.forEach { result ->
-                            val entry = WifiLogEntry(
-                                ssid = result.SSID,
-                                bssid = result.BSSID,
-                                timestamp = getCurrentTime(),
-                                location = address ?: "Unknown location"
+            for (result in results) {
+                if (seenBssids.add(result.BSSID)) {
+                    val ssid = result.SSID ?: "N/A"
+                    val bssid = result.BSSID
+
+                    // Notify map fragment
+                    GlobalScope.launch(Dispatchers.Main) {
+                        scanListener?.onNewScanResult(ssid, bssid, location.latitude, location.longitude)
+                    }
+
+                    // Update ViewModel
+                    val newNetwork = WifiNetwork(ssid, bssid, location.latitude, location.longitude)
+                    viewModel.addNetwork(newNetwork)
+
+                    // Update log UI
+                    GlobalScope.launch(Dispatchers.Main) {
+                        adapter.addLog(
+                            WifiLogEntry(
+                                ssid = ssid,
+                                bssid = bssid,
+                                timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date()),
+                                location = "Lat: ${location.latitude}, Lng: ${location.longitude}"
                             )
-
-
-                            if (!isDuplicate(entry)) {
-                                seenEntries.add(entry)
-                                adapter.addLog(entry)
-                            }
-                        }
+                        )
                     }
                 }
             }
         }
     }
 
-    private fun isDuplicate(newEntry: WifiLogEntry): Boolean {
-        if (newEntry.location.isNullOrBlank()) return false
-
-        return seenEntries.any { existing ->
-            existing.bssid == newEntry.bssid &&
-                    existing.location == newEntry.location
-        }
+    fun setScanListener(listener: WifiScanListener?) {
+        scanListener = listener
     }
 
     fun startScanning() {
-        context.registerReceiver(
-            receiver,
-            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        )
+        val intentFilter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+        context.registerReceiver(receiver, intentFilter)
         scope.launch {
-            while (true) {
+            while (isActive) {
                 wifiManager.startScan()
                 delay(5000)
             }
@@ -71,15 +84,20 @@ class WifiScanner(
     }
 
     fun stopScanning() {
-        scope.cancel()
         try {
             context.unregisterReceiver(receiver)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            println("Error unregistering receiver: ${e.message}")
+        }
+        scope.cancel()
+    }
+
+    fun pushLastScanToListener() {
+        val latestNetworks = viewModel.networks.value
+        latestNetworks?.lastOrNull()?.let { last ->
+            GlobalScope.launch(Dispatchers.Main) {
+                scanListener?.onNewScanResult(last.ssid, last.bssid, last.latitude, last.longitude)
+            }
         }
     }
-}
-
-private fun getCurrentTime(): String {
-    val sdf = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault())
-    return sdf.format(java.util.Date())
 }

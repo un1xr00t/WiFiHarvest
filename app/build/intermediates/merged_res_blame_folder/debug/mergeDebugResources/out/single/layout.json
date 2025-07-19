@@ -1,14 +1,18 @@
 [
     {
-        "merged": "com.app.wifiharvest.app-mergeDebugResources-48:/layout/fragment_live_feed.xml",
-        "source": "com.app.wifiharvest.app-main-51:/layout/fragment_live_feed.xml"
+        "merged": "com.app.wifiharvest.app-mergeDebugResources-49:/layout/fragment_map.xml",
+        "source": "com.app.wifiharvest.app-main-52:/layout/fragment_map.xml"
     },
     {
-        "merged": "/home/elliot/.gradle/daemon/8.6/com.app.wifiharvest.app-mergeDebugResources-48:/layout/item_wifi_log.xml",
-        "source": "/home/elliot/.gradle/daemon/8.6/com.app.wifiharvest.app-main-51:/layout/item_wifi_log.xml"
+        "merged": "com.app.wifiharvest.app-mergeDebugResources-49:/layout/activity_main.xml",
+        "source": "com.app.wifiharvest.app-main-52:/layout/activity_main.xml"
     },
     {
-        "merged": "/home/elliot/.gradle/daemon/8.6/com.app.wifiharvest.app-mergeDebugResources-48:/layout/activity_main.xml",
-        "source": "/home/elliot/.gradle/daemon/8.6/com.app.wifiharvest.app-main-51:/layout/activity_main.xml"
+        "merged": "com.app.wifiharvest.app-mergeDebugResources-49:/layout/item_wifi_log.xml",
+        "source": "com.app.wifiharvest.app-main-52:/layout/item_wifi_log.xml"
+    },
+    {
+        "merged": "com.app.wifiharvest.app-mergeDebugResources-49:/layout/fragment_live_feed.xml",
+        "source": "com.app.wifiharvest.app-main-52:/layout/fragment_live_feed.xml"
     }
 ]

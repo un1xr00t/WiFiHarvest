@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-47:/values-te/values-te.xml",
+            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-48:/values-te/values-te.xml",
             "map": [
                 {
                     "source": "/home/elliot/.gradle/caches/transforms-4/9c5f3a4592537279fa9f1bc52a092274/transformed/jetified-play-services-base-18.1.0/res/values-te/values.xml",
