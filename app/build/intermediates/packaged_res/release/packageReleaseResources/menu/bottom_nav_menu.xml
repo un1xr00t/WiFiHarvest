@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_feed"
+        android:icon="@drawable/ic_terminal"
+        android:title="Feed" />
+    <item
+        android:id="@+id/nav_map"
+        android:icon="@drawable/ic_map"
+        android:title="Map" />
+    <item
+        android:id="@+id/nav_charts"
+        android:icon="@drawable/ic_chart"
+        android:title="Charts" />
+    <item
+        android:id="@+id/nav_export"
+        android:icon="@drawable/ic_export"
+        android:title="Export" />
+</menu>

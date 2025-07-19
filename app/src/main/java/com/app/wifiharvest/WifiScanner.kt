@@ -32,12 +32,14 @@ class WifiScanner(
                             val entry = WifiLogEntry(
                                 ssid = result.SSID,
                                 bssid = result.BSSID,
-                                address = address ?: "Unknown location"
+                                timestamp = getCurrentTime(),
+                                location = address ?: "Unknown location"
                             )
+
 
                             if (!isDuplicate(entry)) {
                                 seenEntries.add(entry)
-                                adapter.addEntry(entry)
+                                adapter.addLog(entry)
                             }
                         }
                     }
@@ -47,11 +49,11 @@ class WifiScanner(
     }
 
     private fun isDuplicate(newEntry: WifiLogEntry): Boolean {
-        if (newEntry.address.isNullOrBlank()) return false
+        if (newEntry.location.isNullOrBlank()) return false
 
         return seenEntries.any { existing ->
             existing.bssid == newEntry.bssid &&
-                    existing.address == newEntry.address
+                    existing.location == newEntry.location
         }
     }
 
@@ -75,4 +77,9 @@ class WifiScanner(
         } catch (_: Exception) {
         }
     }
+}
+
+private fun getCurrentTime(): String {
+    val sdf = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault())
+    return sdf.format(java.util.Date())
 }

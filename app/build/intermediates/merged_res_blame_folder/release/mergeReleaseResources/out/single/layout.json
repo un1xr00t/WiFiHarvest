@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.app.wifiharvest.app-mergeReleaseResources-48:/layout/item_wifi_log.xml",
+        "source": "com.app.wifiharvest.app-main-50:/layout/item_wifi_log.xml"
+    },
+    {
+        "merged": "com.app.wifiharvest.app-mergeReleaseResources-48:/layout/activity_main.xml",
+        "source": "com.app.wifiharvest.app-main-50:/layout/activity_main.xml"
+    }
+]

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-31:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
+            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-47:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
             "map": [
                 {
                     "source": "/home/elliot/.gradle/caches/transforms-4/ecd391702871f4c3ab2812691f997e0d/transformed/material-1.11.0/res/values-w400dp-port-v13/values-w400dp-port-v13.xml",

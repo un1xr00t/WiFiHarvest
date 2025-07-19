@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-31:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+            "outputFile": "com.app.wifiharvest.app-mergeDebugResources-47:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
             "map": [
                 {
                     "source": "/home/elliot/.gradle/caches/transforms-4/ecd391702871f4c3ab2812691f997e0d/transformed/material-1.11.0/res/values-h320dp-port-v13/values-h320dp-port-v13.xml",

@@ -1,0 +1,20 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_launcher_background
+id address
+id bottom_nav
+id fragment_container
+id nav_charts
+id nav_export
+id nav_feed
+id nav_graph
+id nav_map
+id ssid_bssid
+layout activity_main
+layout item_wifi_log
+menu bottom_nav_menu
+mipmap ic_launcher
+mipmap ic_launcher_foreground
+mipmap ic_launcher_round
+navigation nav_graph
+style Theme.WiFiHarvest
