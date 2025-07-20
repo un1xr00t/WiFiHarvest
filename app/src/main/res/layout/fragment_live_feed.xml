@@ -26,6 +26,12 @@
         android:backgroundTint="#222222"
         android:layout_marginTop="8dp" />
 
+    <Button
+        android:id="@+id/exportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Export" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

@@ -8,6 +8,11 @@ import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import kotlinx.coroutines.*
 import com.google.android.gms.location.LocationServices
+import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import android.util.Log
 
 class WifiScanner(
     private val context: Context,
@@ -17,7 +22,7 @@ class WifiScanner(
 ) {
     private val wifiManager =
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private var scanJob: Job? = null
     private var scanListener: WifiScanListener? = null
     private val seenBssids = mutableSetOf<String>()
 
@@ -25,43 +30,51 @@ class WifiScanner(
         override fun onReceive(ctx: Context?, intent: Intent?) {
             if (intent?.action == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
                 val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
-                if (success) {
-                    processScanResults(wifiManager.scanResults)
-                } else {
-                    processScanResults(wifiManager.scanResults) // fallback
-                }
+                processScanResults(wifiManager.scanResults)
             }
         }
     }
 
     private fun processScanResults(results: List<ScanResult>) {
-        locationHelper.getCurrentLocation { location ->
-            if (location == null) return@getCurrentLocation
+            locationHelper.getFreshLocation { location ->
+            if (location == null) return@getFreshLocation
+
+                Log.d("WiFiScan", "GPS: Lat=${location.latitude}, Lng=${location.longitude}")
+            Log.d("WiFiScan", "Scan cycle started — found ${results.size} networks")
+            Log.d("WiFiScan", "Total unique BSSIDs seen so far: ${seenBssids.size}")
 
             for (result in results) {
-                if (seenBssids.add(result.BSSID)) {
-                    val ssid = result.SSID ?: "N/A"
-                    val bssid = result.BSSID
+                val ssid = result.SSID ?: "N/A"
+                val bssid = result.BSSID
+                val rssi = result.level
 
-                    // Notify map fragment
+                if (seenBssids.add(bssid)) {
                     GlobalScope.launch(Dispatchers.Main) {
                         scanListener?.onNewScanResult(ssid, bssid, location.latitude, location.longitude)
                     }
 
-                    // Update ViewModel
-                    val newNetwork = WifiNetwork(ssid, bssid, location.latitude, location.longitude)
-                    viewModel.addNetwork(newNetwork)
+                    locationHelper.getAddressFromLocation(location.latitude, location.longitude) { address ->
+                        val resolvedAddress = address ?: "Lat: ${location.latitude}, Lng: ${location.longitude}"
 
-                    // Update log UI
-                    GlobalScope.launch(Dispatchers.Main) {
-                        adapter.addLog(
-                            WifiLogEntry(
-                                ssid = ssid,
-                                bssid = bssid,
-                                timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date()),
-                                location = "Lat: ${location.latitude}, Lng: ${location.longitude}"
-                            )
+                        val newNetwork = WifiNetwork(
+                            ssid = ssid,
+                            bssid = bssid,
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            address = resolvedAddress
                         )
+                        viewModel.addNetwork(newNetwork)
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            adapter.addLog(
+                                WifiLogEntry(
+                                    ssid = ssid,
+                                    bssid = bssid,
+                                    timestamp = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date()),
+                                    location = resolvedAddress
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -75,10 +88,17 @@ class WifiScanner(
     fun startScanning() {
         val intentFilter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         context.registerReceiver(receiver, intentFilter)
-        scope.launch {
+
+        GlobalScope.launch(Dispatchers.Main) {
+            Toast.makeText(context, "Scanning started", Toast.LENGTH_SHORT).show()
+        }
+
+        if (scanJob?.isActive == true) return
+
+        scanJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 wifiManager.startScan()
-                delay(5000)
+                delay(3000)
             }
         }
     }
@@ -89,8 +109,15 @@ class WifiScanner(
         } catch (e: Exception) {
             println("Error unregistering receiver: ${e.message}")
         }
-        scope.cancel()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            Toast.makeText(context, "Scanning stopped", Toast.LENGTH_SHORT).show()
+        }
+
+        scanJob?.cancel()
+        scanJob = null
     }
+
 
     fun pushLastScanToListener() {
         val latestNetworks = viewModel.networks.value

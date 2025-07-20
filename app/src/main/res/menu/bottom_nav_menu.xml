@@ -11,8 +11,4 @@
         android:id="@+id/nav_charts"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="Charts" />
-    <item
-        android:id="@+id/nav_export"
-        android:icon="@android:drawable/ic_menu_share"
-        android:title="Export" />
 </menu>

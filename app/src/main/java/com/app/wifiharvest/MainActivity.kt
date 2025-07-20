@@ -9,7 +9,7 @@ import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.app.wifiharvest.fragments.MapFragment
 import androidx.lifecycle.ViewModelProvider
-
+import com.app.wifiharvest.MainActivity
 
 private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
@@ -74,6 +74,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNav.selectedItemId = R.id.nav_feed
+    }
+
+    fun startWifiScan() {
+        wifiScanner.startScanning()
+    }
+
+    fun stopWifiScan() {
+        wifiScanner.stopScanning()
     }
 }
 

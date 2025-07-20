@@ -19,8 +19,4 @@
         android:name="com.app.wifiharvest.fragments.ChartsFragment"
         android:label="Charts" />
 
-    <fragment
-        android:id="@+id/nav_export"
-        android:name="com.app.wifiharvest.fragments.ExportFragment"
-        android:label="Export" />
 </navigation>
