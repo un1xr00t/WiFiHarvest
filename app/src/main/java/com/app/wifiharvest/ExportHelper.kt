@@ -18,7 +18,7 @@ object ExportHelper {
             file.bufferedWriter().use { out ->
                 out.write("SSID,BSSID,Latitude,Longitude\n")
                 networks.forEach { net ->
-                    out.write("${net.ssid},${net.bssid},${net.latitude},${net.longitude}\n")
+                    out.write("${net.ssid},${net.bssid},${net.lat},${net.lng}\n")
                 }
             }
             Toast.makeText(context, "CSV exported successfully", Toast.LENGTH_SHORT).show()

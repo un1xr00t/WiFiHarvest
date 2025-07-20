@@ -8,7 +8,8 @@
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="Map" />
     <item
-        android:id="@+id/nav_charts"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:title="Charts" />
+        android:id="@+id/nav_analytics"
+        android:icon="@mipmap/ic_launcher"
+        android:title="Analytics" />
+
 </menu>

@@ -16,9 +16,10 @@
         android:label="Map" />
 
     <fragment
-        android:id="@+id/nav_charts"
-        android:name="com.app.wifiharvest.fragments.ChartsFragment"
-        android:label="Charts" />
+    android:id="@+id/nav_analytics"
+    android:name="com.app.wifiharvest.fragments.AnalyticsFragment"
+    android:label="Analytics"
+    tools:layout="@layout/fragment_analytics" />
 
     <fragment
         android:id="@+id/nav_saved_captures"

@@ -1,4 +1,3 @@
-// app/src/main/java/com/app/wifiharvest/models/WifiEntry.kt
 package com.app.wifiharvest.models
 
 data class WifiEntry(
@@ -6,5 +5,7 @@ data class WifiEntry(
     val BSSID: String,
     val lat: Double,
     val lng: Double,
-    val signal: Int
+    val signal: Int,
+    val location: String? = null,
+    val timestamp: String? = null  // ✅ Optional timestamp field
 )

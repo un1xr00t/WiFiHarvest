@@ -1,11 +1,12 @@
 package com.app.wifiharvest.fragments
 
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.app.wifiharvest.R
 import com.app.wifiharvest.SharedWifiViewModel
 import com.app.wifiharvest.databinding.FragmentMapBinding
@@ -15,76 +16,69 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.app.wifiharvest.WifiScanListener
-import com.google.android.gms.location.LocationServices
+import java.util.Locale
 
-
-class MapFragment : Fragment(), OnMapReadyCallback, WifiScanListener {
+class MapFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: SharedWifiViewModel
-    private lateinit var map: GoogleMap
+
+    private lateinit var googleMap: GoogleMap
+    private val viewModel: SharedWifiViewModel by activityViewModels()
+    private val shownAddresses = mutableSetOf<String>()
+    private var initialZoomDone = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(requireActivity())[SharedWifiViewModel::class.java]
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-    }
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
+        viewModel.networks.observe(viewLifecycleOwner) { wifiList ->
+            if (wifiList.isEmpty()) return@observe
 
-        LocationServices.getFusedLocationProviderClient(requireContext())
-            .lastLocation
-            .addOnSuccessListener { location ->
-                location?.let {
-                    val myLatLng = LatLng(it.latitude, it.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16f))
-                    map.addMarker(
-                        MarkerOptions()
-                            .position(myLatLng)
-                            .title("You are here")
-                    )
+            for (network in wifiList) {
+                val latLng = LatLng(network.lat, network.lng)
+
+                val addressLine = try {
+                    geocoder.getFromLocation(network.lat, network.lng, 1)
+                        ?.firstOrNull()
+                        ?.getAddressLine(0)
+                        ?: "${network.lat},${network.lng}"
+                } catch (e: Exception) {
+                    "${network.lat},${network.lng}"
+                }
+
+                if (shownAddresses.contains(addressLine)) continue
+
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(network.ssid.ifBlank { "(Hidden SSID)" })
+                        .snippet("Address: $addressLine")
+                )
+
+                shownAddresses.add(addressLine)
+
+                if (!initialZoomDone) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                    initialZoomDone = true
                 }
             }
-
-        viewModel.networks.observe(viewLifecycleOwner) { list ->
-            map.clear()
-
-            // Drop all markers
-            for (network in list) {
-                val latLng = LatLng(network.latitude, network.longitude)
-                map.addMarker(MarkerOptions().position(latLng).title(network.ssid))
-            }
-
-            // Optional: Focus camera on the most recent scan
-            list.lastOrNull()?.let {
-                val focus = LatLng(it.latitude, it.longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(focus, 16f))
-            }
         }
     }
-
-    override fun onNewScanResult(ssid: String, bssid: String, lat: Double, lon: Double) {
-        if (::map.isInitialized) {
-            val location = LatLng(lat, lon)
-            map.addMarker(
-                MarkerOptions()
-                    .position(location)
-                    .title("$ssid ($bssid)")
-            )
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

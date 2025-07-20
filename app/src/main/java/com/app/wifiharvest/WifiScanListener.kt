@@ -1,5 +1,7 @@
 package com.app.wifiharvest
 
-fun interface WifiScanListener {
-    fun onNewScanResult(ssid: String, bssid: String, lat: Double, lon: Double)
+interface WifiScanListener {
+    fun onNewNetworkFound(ssid: String, bssid: String, lat: Double, lng: Double)  // Changed lon to lng
+    fun onScanStatusChanged(status: String)
+    fun onScanFailed(error: String)
 }

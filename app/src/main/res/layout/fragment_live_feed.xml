@@ -8,7 +8,7 @@
     android:background="#000000">
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/startScanButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Scanning"
@@ -17,7 +17,7 @@
         android:backgroundTint="#222222" />
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/stopScanButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Stop Scanning"
@@ -26,11 +26,18 @@
         android:backgroundTint="#222222"
         android:layout_marginTop="8dp" />
 
+
     <Button
         android:id="@+id/exportButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Export" />
+
+    <Button
+        android:id="@+id/btnLoadCsv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load CSV" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

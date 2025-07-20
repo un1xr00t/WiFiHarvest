@@ -1,26 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:orientation="vertical"
-    android:background="?android:attr/selectableItemBackground">
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="#1E1E1E"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
 
-    <TextView
-        android:id="@+id/ssid_bssid"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#00FF00"
-        android:textSize="16sp"
-        android:typeface="monospace" />
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#CCCCCC"
-        android:textSize="14sp"
-        android:typeface="monospace"
-        android:layout_marginTop="4dp" />
-</LinearLayout>
+        <!-- SSID with signal strength -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/ssidText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SSID"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/signalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Signal: __ dBm"
+                android:textSize="12sp"
+                android:textColor="#00FF00" />
+
+        </LinearLayout>
+
+        <!-- BSSID -->
+        <TextView
+            android:id="@+id/bssidText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BSSID"
+            android:textSize="12sp"
+            android:textColor="#CCCCCC"
+            android:fontFamily="monospace"
+            android:layout_marginTop="4dp" />
+
+        <!-- Coordinates -->
+        <TextView
+            android:id="@+id/coordsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lat: __ Lng: __"
+            android:textSize="11sp"
+            android:textColor="#888888"
+            android:layout_marginTop="4dp" />
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/timestampText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Timestamp"
+            android:textSize="10sp"
+            android:textColor="#666666"
+            android:layout_marginTop="2dp" />
+
+        <!-- Hidden views for compatibility -->
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/signalBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone" />
+
+        <!-- Hidden signal bars for compatibility -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <View android:id="@+id/bar1" android:layout_width="1dp" android:layout_height="1dp" />
+            <View android:id="@+id/bar2" android:layout_width="1dp" android:layout_height="1dp" />
+            <View android:id="@+id/bar3" android:layout_width="1dp" android:layout_height="1dp" />
+            <View android:id="@+id/bar4" android:layout_width="1dp" android:layout_height="1dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
