@@ -13,6 +13,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.util.Log
+import com.app.wifiharvest.models.WifiEntry
+import com.app.wifiharvest.models.ScanSession
+import com.app.wifiharvest.utils.FileManager
+import java.util.*
 
 class WifiScanner(
     private val context: Context,
@@ -20,6 +24,7 @@ class WifiScanner(
     private val locationHelper: LocationHelper,
     private val viewModel: SharedWifiViewModel
 ) {
+    private val wifiEntries = mutableListOf<WifiEntry>()
     private val wifiManager =
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private var scanJob: Job? = null
@@ -36,36 +41,58 @@ class WifiScanner(
     }
 
     private fun processScanResults(results: List<ScanResult>) {
-            locationHelper.getFreshLocation { location ->
+        locationHelper.getFreshLocation { location ->
             if (location == null) return@getFreshLocation
 
-                Log.d("WiFiScan", "GPS: Lat=${location.latitude}, Lng=${location.longitude}")
+            Log.d("WiFiScan", "GPS: Lat=${location.latitude}, Lng=${location.longitude}")
             Log.d("WiFiScan", "Scan cycle started — found ${results.size} networks")
             Log.d("WiFiScan", "Total unique BSSIDs seen so far: ${seenBssids.size}")
 
             for (result in results) {
-                val ssid = result.SSID ?: "N/A"
+                val ssid = result.SSID ?: "igitgit N/A"
                 val bssid = result.BSSID
                 val rssi = result.level
 
                 if (seenBssids.add(bssid)) {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        scanListener?.onNewScanResult(ssid, bssid, location.latitude, location.longitude)
+                    val wifiEntry = WifiEntry(
+                        SSID = ssid,
+                        BSSID = bssid,
+                        lat = location.latitude,
+                        lng = location.longitude,
+                        signal = rssi
+                    )
+
+                    wifiEntries.add(wifiEntry)
+
+                    if (wifiEntries.size > 300) {
+                        val archiveBatch = wifiEntries.take(100)
+                        wifiEntries.removeAll(archiveBatch)
+
+                        val session = ScanSession(
+                            timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+                            networks = archiveBatch
+                        )
+
+                        FileManager.saveCapture(context, session)
+                        Log.d("WiFiScanner", "Archived 100 entries to JSON")
                     }
 
-                    locationHelper.getAddressFromLocation(location.latitude, location.longitude) { address ->
-                        val resolvedAddress = address ?: "Lat: ${location.latitude}, Lng: ${location.longitude}"
+                    GlobalScope.launch(Dispatchers.Main) {
+                        scanListener?.onNewScanResult(ssid, bssid, location.latitude, location.longitude)
 
-                        val newNetwork = WifiNetwork(
-                            ssid = ssid,
-                            bssid = bssid,
-                            latitude = location.latitude,
-                            longitude = location.longitude,
-                            address = resolvedAddress
-                        )
-                        viewModel.addNetwork(newNetwork)
+                        locationHelper.getAddressFromLocation(location.latitude, location.longitude) { address ->
+                            val resolvedAddress = address ?: "Lat: ${location.latitude}, Lng: ${location.longitude}"
 
-                        GlobalScope.launch(Dispatchers.Main) {
+                            viewModel.addNetwork(
+                                WifiNetwork(
+                                    ssid = ssid,
+                                    bssid = bssid,
+                                    latitude = location.latitude,
+                                    longitude = location.longitude,
+                                    address = resolvedAddress
+                                )
+                            )
+
                             adapter.addLog(
                                 WifiLogEntry(
                                     ssid = ssid,
@@ -117,7 +144,6 @@ class WifiScanner(
         scanJob?.cancel()
         scanJob = null
     }
-
 
     fun pushLastScanToListener() {
         val latestNetworks = viewModel.networks.value

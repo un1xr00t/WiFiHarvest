@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/nav_feed">
 
@@ -19,4 +20,9 @@
         android:name="com.app.wifiharvest.fragments.ChartsFragment"
         android:label="Charts" />
 
+    <fragment
+        android:id="@+id/nav_saved_captures"
+        android:name="com.app.wifiharvest.fragments.SavedCapturesFragment"
+        android:label="Saved Captures"
+        tools:layout="@layout/fragment_saved_captures" />
 </navigation>
