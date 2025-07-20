@@ -12,93 +12,134 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="12dp">
 
-        <!-- SSID with signal strength -->
+        <!-- Left side - Network information -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <!-- Network Name (SSID) -->
             <TextView
                 android:id="@+id/ssidText"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="SSID"
+                android:text="Network Name"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:textColor="#FFFFFF" />
+                android:textColor="#00FF00" />
+
+            <!-- MAC Address (BSSID) -->
+            <TextView
+                android:id="@+id/bssidText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MAC Address"
+                android:textSize="12sp"
+                android:textColor="#00FF00"
+                android:fontFamily="monospace"
+                android:layout_marginTop="2dp" />
+
+            <!-- Physical Address -->
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading address..."
+                android:textSize="11sp"
+                android:textColor="#00FF00"
+                android:layout_marginTop="2dp" />
+
+            <!-- Coordinates -->
+            <TextView
+                android:id="@+id/coordsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Coordinates"
+                android:textSize="10sp"
+                android:textColor="#00FF00"
+                android:fontFamily="monospace"
+                android:layout_marginTop="2dp" />
+
+            <!-- Date/Timestamp -->
+            <TextView
+                android:id="@+id/timestampText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textSize="10sp"
+                android:textColor="#00FF00"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Right side - Signal strength -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginStart="12dp">
 
             <TextView
                 android:id="@+id/signalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Signal: __ dBm"
+                android:text="Signal"
                 android:textSize="12sp"
-                android:textColor="#00FF00" />
+                android:textStyle="bold"
+                android:gravity="center" />
 
-        </LinearLayout>
+            <!-- Signal strength bars -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="bottom">
 
-        <!-- BSSID -->
-        <TextView
-            android:id="@+id/bssidText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="BSSID"
-            android:textSize="12sp"
-            android:textColor="#CCCCCC"
-            android:fontFamily="monospace"
-            android:layout_marginTop="4dp" />
+                <View
+                    android:id="@+id/bar1"
+                    android:layout_width="4dp"
+                    android:layout_height="6dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="#666666" />
 
-        <!-- Coordinates -->
-        <TextView
-            android:id="@+id/coordsText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lat: __ Lng: __"
-            android:textSize="11sp"
-            android:textColor="#888888"
-            android:layout_marginTop="4dp" />
+                <View
+                    android:id="@+id/bar2"
+                    android:layout_width="4dp"
+                    android:layout_height="10dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="#666666" />
 
-        <!-- Timestamp -->
-        <TextView
-            android:id="@+id/timestampText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Timestamp"
-            android:textSize="10sp"
-            android:textColor="#666666"
-            android:layout_marginTop="2dp" />
+                <View
+                    android:id="@+id/bar3"
+                    android:layout_width="4dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="#666666" />
 
-        <!-- Hidden views for compatibility -->
-        <TextView
-            android:id="@+id/locationText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:visibility="gone" />
+                <View
+                    android:id="@+id/bar4"
+                    android:layout_width="4dp"
+                    android:layout_height="18dp"
+                    android:background="#666666" />
 
-        <TextView
-            android:id="@+id/signalBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:visibility="gone" />
+            </LinearLayout>
 
-        <!-- Hidden signal bars for compatibility -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-            <View android:id="@+id/bar1" android:layout_width="1dp" android:layout_height="1dp" />
-            <View android:id="@+id/bar2" android:layout_width="1dp" android:layout_height="1dp" />
-            <View android:id="@+id/bar3" android:layout_width="1dp" android:layout_height="1dp" />
-            <View android:id="@+id/bar4" android:layout_width="1dp" android:layout_height="1dp" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <!-- Hidden compatibility view -->
+    <TextView
+        android:id="@+id/signalBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

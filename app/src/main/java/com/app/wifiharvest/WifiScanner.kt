@@ -13,10 +13,15 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.MutableLiveData
 import com.app.wifiharvest.WifiNetwork
 import com.app.wifiharvest.SharedWifiViewModel
 import kotlin.math.*
 import com.app.wifiharvest.WifiScanListener
+import kotlinx.coroutines.*
+import android.location.Geocoder
+import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 private const val LOCATION_CLUSTER_RADIUS_METERS = 10f // Reduced from 30m
 private const val MIN_SCAN_INTERVAL_MS = 30000L // 30 seconds minimum between scans
@@ -45,6 +50,13 @@ class WifiScanner(
     private var lastScanResetTime = System.currentTimeMillis()
     private var lastSuccessfulScan = 0L
 
+    // Geocoding improvements
+    private val geocodingScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val addressCache = ConcurrentHashMap<String, String>()
+    private val geocodingQueue = mutableListOf<WifiNetwork>()
+    private var isGeocodingActive = false
+    private val geocodingDelay = 1000L // 1 second between geocoding requests
+
     // BroadcastReceiver to listen for scan results
     private val wifiScanReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -69,6 +81,7 @@ class WifiScanner(
             context.registerReceiver(wifiScanReceiver, intentFilter)
 
             handler.post(scanRunnable)
+            startGeocodingProcessor()
             Log.d("WifiScanner", "WiFi scanning started with ${scanInterval}ms interval")
         }
     }
@@ -82,6 +95,10 @@ class WifiScanner(
         } catch (e: IllegalArgumentException) {
             // Receiver wasn't registered, ignore
         }
+
+        // Cancel any ongoing geocoding operations
+        geocodingScope.cancel()
+        isGeocodingActive = false
 
         Log.d("WifiScanner", "WiFi scanning stopped")
     }
@@ -207,6 +224,10 @@ class WifiScanner(
                 continue
             }
 
+            // Check if we have a cached address for this approximate location
+            val locationKey = "${lat.toInt()}.${lng.toInt()}"
+            val cachedAddress = addressCache[locationKey]
+
             val network = WifiNetwork(
                 ssid = result.SSID ?: "",
                 bssid = result.BSSID,
@@ -214,7 +235,7 @@ class WifiScanner(
                 lat = lat,
                 lng = lng,
                 timestamp = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date()),
-                location = null // Will be geocoded later if needed
+                location = cachedAddress ?: "Loading address..."
             )
 
             currentLog.add(0, network)
@@ -227,6 +248,15 @@ class WifiScanner(
 
             viewModel.addNetwork(network)
             Log.d("WifiScanner", "✓ Added network to ViewModel (${viewModel.hashCode()}): ${network.ssid} (${network.bssid})")
+
+            // Add to geocoding queue if we don't have a cached address
+            if (cachedAddress == null) {
+                synchronized(geocodingQueue) {
+                    geocodingQueue.add(network)
+                }
+                Log.d("WifiScanner", "Added ${network.ssid} to geocoding queue")
+            }
+
             scanListener.onNewNetworkFound(
                 network.ssid,
                 network.bssid,
@@ -241,6 +271,101 @@ class WifiScanner(
             scanListener.onScanStatusChanged("Found $newNetworksFound new networks")
         } else {
             scanListener.onScanStatusChanged("No new networks found")
+        }
+    }
+
+    private fun startGeocodingProcessor() {
+        geocodingScope.launch {
+            isGeocodingActive = true
+            while (isGeocodingActive && isActive) {
+                val networkToGeocode = synchronized(geocodingQueue) {
+                    if (geocodingQueue.isNotEmpty()) geocodingQueue.removeAt(0) else null
+                }
+
+                if (networkToGeocode != null) {
+                    try {
+                        Log.d("WifiScanner", "Geocoding ${networkToGeocode.ssid}...")
+                        val address = geocodeLocation(networkToGeocode.lat, networkToGeocode.lng)
+
+                        if (address != null) {
+                            // Cache the address for this general location
+                            val locationKey = "${networkToGeocode.lat.toInt()}.${networkToGeocode.lng.toInt()}"
+                            addressCache[locationKey] = address
+
+                            // Update the network
+                            updateNetworkAddress(networkToGeocode, address)
+                            Log.d("WifiScanner", "✓ Geocoded ${networkToGeocode.ssid}: $address")
+                        } else {
+                            // Update with fallback message
+                            updateNetworkAddress(networkToGeocode, "Address unavailable")
+                            Log.w("WifiScanner", "Failed to geocode ${networkToGeocode.ssid}")
+                        }
+
+                        // Rate limiting - wait between requests
+                        delay(geocodingDelay)
+
+                    } catch (e: Exception) {
+                        Log.e("WifiScanner", "Error geocoding ${networkToGeocode.ssid}", e)
+                        updateNetworkAddress(networkToGeocode, "Geocoding error")
+                    }
+                } else {
+                    // No networks to geocode, wait a bit
+                    delay(5000)
+                }
+            }
+        }
+    }
+
+    private suspend fun geocodeLocation(lat: Double, lng: Double): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                if (!Geocoder.isPresent()) {
+                    Log.w("WifiScanner", "Geocoder not available on this device")
+                    return@withContext null
+                }
+
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(lat, lng, 1)
+
+                val address = addresses?.firstOrNull()
+                when {
+                    address?.getAddressLine(0) != null -> address.getAddressLine(0)
+                    address?.thoroughfare != null -> {
+                        val street = address.thoroughfare
+                        val city = address.locality ?: address.subAdminArea
+                        if (city != null) "$street, $city" else street
+                    }
+                    address?.locality != null -> address.locality
+                    address?.subAdminArea != null -> address.subAdminArea
+                    address?.adminArea != null -> address.adminArea
+                    else -> null
+                }
+            } catch (e: Exception) {
+                Log.e("WifiScanner", "Geocoding exception", e)
+                null
+            }
+        }
+    }
+
+    private fun updateNetworkAddress(network: WifiNetwork, address: String) {
+        val updatedNetwork = network.copy(location = address)
+
+        // Update in current log
+        val index = currentLog.indexOfFirst { it.bssid == network.bssid }
+        if (index >= 0) {
+            currentLog[index] = updatedNetwork
+        }
+
+        // Update in ViewModel
+        handler.post {
+            val currentNetworks = viewModel.networks.value?.toMutableList()
+            currentNetworks?.let { networks ->
+                val vmIndex = networks.indexOfFirst { it.bssid == network.bssid }
+                if (vmIndex >= 0) {
+                    networks[vmIndex] = updatedNetwork
+                    (viewModel.networks as MutableLiveData).postValue(networks)
+                }
+            }
         }
     }
 
