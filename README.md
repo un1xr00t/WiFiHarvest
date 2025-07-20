@@ -1,33 +1,37 @@
 # 📶 WiFiHarvest
 
-An Android app for scanning and logging nearby Wi-Fi networks with real-time GPS tagging and live map integration.
+An Android app for scanning and logging nearby Wi-Fi networks with **real-time GPS** and **physical address tagging**, including **live map pins**, **dynamic feed updates**, and **CSV export**.
 
-WiFiHarvest uses `WifiManager` to gather SSID and BSSID data from surrounding access points and pins their exact physical locations on a live map using `FusedLocationProviderClient`. All results are shown in a dynamic feed and synced across tabs using `LiveData` and `ViewModel`.
+WiFiHarvest uses `WifiManager` to gather SSID/BSSID info from surrounding access points and maps them to exact real-world street addresses using `FusedLocationProviderClient`. Everything is synced across tabs via `LiveData`, and all logs are exportable in a tap.
 
 ---
 
 ## 📱 Features
 
 - 📡 Scans for nearby Wi-Fi SSIDs and BSSIDs  
-- 🌍 Captures GPS coordinates (lat/lng) per scan  
-- 🗺️ Displays access points on a Google Map with live pin drops  
-- 🧠 Shared ViewModel for real-time data sync across fragments  
-- 🔁 Live feed auto-updates as new networks are discovered  
-- 🚫 Filters out duplicate BSSIDs to avoid noisy logs  
-- ⏱ Rescans every 5 seconds while active  
-- 🎛 Manual Start/Stop scan control  
-- 🔒 Runtime permissions for fine location  
+- 🌐 Uses fresh GPS data per scan — no stale coordinates  
+- 🏠 Converts GPS to street address (reverse geocoding)  
+- 🗺️ Drops real-time map pins for each unique access point  
+- 🔁 Live feed updates as new networks are discovered  
+- 📊 CSV export includes SSID, BSSID, GPS, and Address  
+- 🧠 Shared ViewModel for data sync across fragments  
+- 🚫 Filters duplicate BSSIDs across scan cycles  
+- ⏱ Scans every 3 seconds until manually stopped  
+- 🔒 Fine location permissions w/ runtime handling  
+- 🎛 Manual Start/Stop scan buttons  
 
 ---
 
 ## 🧪 Architecture Highlights
 
-- **Fragment-to-Fragment sync** via `SharedWifiViewModel`  
-- **Coroutines-based scanner** runs every 5 seconds  
-- **FusedLocationProviderClient** for accurate GPS fixes  
-- **MapFragment** observes `LiveData` and drops markers live  
-- **Custom `WifiScanListener` interface** for pin callbacks  
-- **RecyclerView adapter** keeps the feed in sync  
+- `SharedWifiViewModel` stores all Wi-Fi networks  
+- Coroutine-based `WifiScanner` runs every 3 seconds  
+- `getFreshLocation()` uses `suspendCoroutine` for live GPS  
+- `LocationHelper` resolves GPS to street addresses  
+- MapFragment observes LiveData and updates markers  
+- LiveFeedFragment uses `WifiLogAdapter` with dynamic address display  
+- ExportHelper creates and shares .CSV with all fields  
+- Logcat shows scan status and debug data (e.g. BSSID count, GPS, address)
 
 ---
 
@@ -41,14 +45,14 @@ WiFiHarvest uses `WifiManager` to gather SSID and BSSID data from surrounding ac
 
 2. **Open in Android Studio**
 
-3. **Ensure you have:**
+3. **Make sure you have:**
    - Android Studio Hedgehog or newer  
    - JDK 17  
    - Gradle 8.6  
    - AGP 8.3.0  
 
-4. **Add your Google Maps API key**  
-   Create this file (not committed to Git):
+4. **Set up your Google Maps API Key**  
+   Create this file:
    ```
    app/src/main/res/values/google_maps_api.xml
    ```
@@ -59,7 +63,7 @@ WiFiHarvest uses `WifiManager` to gather SSID and BSSID data from surrounding ac
    </resources>
    ```
 
-5. **Connect a device or emulator** with:
+5. **Run on a device/emulator** with:
    - Location services enabled  
    - Wi-Fi turned on  
    - Internet connection for map tiles  
@@ -76,16 +80,6 @@ In `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 ```
-
----
-
-## 📸 Screenshots
-
-> _(Drop screenshots here)_  
-> Example:  
-> ![WiFiHarvest UI](screenshots/live-feed.jpg)  
-> ![Map Pins](screenshots/map-pins.jpg)  
-
 ---
 
 ## 📦 Dependencies
@@ -103,12 +97,11 @@ In `AndroidManifest.xml`:
 
 ## 🚀 Future Enhancements (PRs welcome!)
 
-- Export Wi-Fi logs to CSV or JSON  
-- Background scanning service  
-- Heatmap overlay for RSSI strength  
-- Wardriving mode with auto-logging  
-- Threat scoring (e.g. open networks or weak encryption)  
-- MAC vendor resolution  
+- 🔄 Background scanning service  
+- 🌈 Heatmap overlay for signal strength  
+- 🚗 Wardriving mode with auto-logging  
+- ⚠️ Threat scoring (e.g. open networks, weak encryption)  
+- 🧬 MAC vendor resolution  
 
 ---
 
@@ -123,3 +116,4 @@ Do not use it to collect data on networks you are not permitted to scan.
 
 Built by [Your Name or Alias]  
 MIT License
+****
