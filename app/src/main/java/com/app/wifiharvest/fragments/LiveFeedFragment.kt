@@ -125,7 +125,7 @@ class LiveFeedFragment : Fragment() {
 
         binding.stopScanButton.setOnClickListener {
             Log.d("LiveFeedFragment", "Stop scan button clicked")
-            (requireActivity() as MainActivity).stopScanService()
+            (requireActivity() as MainActivity).stopScanService()  // ← Make sure this line looks like this
             stopAutoSave()
 
             // Visual feedback
