@@ -63,6 +63,18 @@ class LiveFeedFragment : Fragment() {
         }
     }
 
+    // File saver for CSV export
+    private val csvSaverLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri ->
+        if (uri != null) {
+            val networks = viewModel.networks.value
+            if (!networks.isNullOrEmpty()) {
+                saveToUserSelectedLocation(uri, networks)
+            }
+        }
+    }
+
     private val autoSaveRunnable = object : Runnable {
         override fun run() {
             if (isAutoSaving) {
@@ -174,36 +186,59 @@ class LiveFeedFragment : Fragment() {
                 var importedCount = 0
                 var line: String?
 
-                // Skip header line
-                reader.readLine()
+                // Read and check header line
+                val headerLine = reader.readLine()
+                val hasSignalColumn = headerLine?.contains("Signal", ignoreCase = true) == true
+
+                Log.d("LiveFeedFragment", "CSV Header: $headerLine")
+                Log.d("LiveFeedFragment", "Has Signal column: $hasSignalColumn")
 
                 while (reader.readLine().also { line = it } != null) {
                     lineCount++
                     line?.let { csvLine ->
                         val parts = csvLine.split(",").map { it.trim().removeSurrounding("\"") }
 
-                        if (parts.size >= 4) {
+                        // Support both old format (4-5 columns) and new format (6 columns with signal)
+                        val minColumns = if (hasSignalColumn) 5 else 4
+
+                        if (parts.size >= minColumns) {
                             try {
-                                val network = WifiNetwork(
-                                    ssid = parts[0],
-                                    bssid = parts[1],
-                                    signal = -50, // Default signal strength
-                                    lat = parts[2].toDouble(),
-                                    lng = parts[3].toDouble(),
-                                    timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
-                                    location = if (parts.size > 4) parts[4] else "Imported from CSV"
-                                )
+                                val network = if (hasSignalColumn && parts.size >= 5) {
+                                    // New format: SSID, BSSID, Latitude, Longitude, Signal, Physical address
+                                    WifiNetwork(
+                                        ssid = parts[0],
+                                        bssid = parts[1],
+                                        signal = parts[4].toIntOrNull() ?: -50, // Parse signal or default to -50
+                                        lat = parts[2].toDouble(),
+                                        lng = parts[3].toDouble(),
+                                        timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+                                        location = if (parts.size > 5) parts[5] else "Imported from CSV"
+                                    )
+                                } else {
+                                    // Old format: SSID, BSSID, Latitude, Longitude, Physical address
+                                    WifiNetwork(
+                                        ssid = parts[0],
+                                        bssid = parts[1],
+                                        signal = -50, // Default signal for old format
+                                        lat = parts[2].toDouble(),
+                                        lng = parts[3].toDouble(),
+                                        timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+                                        location = if (parts.size > 4) parts[4] else "Imported from CSV"
+                                    )
+                                }
 
                                 withContext(Dispatchers.Main) {
                                     viewModel.addNetwork(network)
                                 }
                                 importedCount++
 
+                                Log.d("LiveFeedFragment", "Imported: ${network.ssid} (${network.signal} dBm)")
+
                             } catch (e: NumberFormatException) {
-                                Log.w("LiveFeedFragment", "Invalid coordinates in line $lineCount: $csvLine")
+                                Log.w("LiveFeedFragment", "Invalid data in line $lineCount: $csvLine - ${e.message}")
                             }
                         } else {
-                            Log.w("LiveFeedFragment", "Invalid CSV format in line $lineCount: $csvLine")
+                            Log.w("LiveFeedFragment", "Invalid CSV format in line $lineCount (${parts.size} columns): $csvLine")
                         }
                     }
                 }
@@ -213,7 +248,7 @@ class LiveFeedFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         requireContext(),
-                        "Imported $importedCount networks from CSV",
+                        "Imported $importedCount networks from CSV (Format: ${if (hasSignalColumn) "New with Signal" else "Legacy"})",
                         Toast.LENGTH_LONG
                     ).show()
                     Log.d("LiveFeedFragment", "CSV import completed: $importedCount/$lineCount networks imported")
@@ -253,25 +288,36 @@ class LiveFeedFragment : Fragment() {
     }
 
     private fun saveToDevice(networks: List<WifiNetwork>) {
+        // Generate filename with timestamp
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "wifiharvest_export_$timestamp.csv"
+
+        // Launch the system save dialog
+        csvSaverLauncher.launch(fileName)
+    }
+
+    private fun saveToUserSelectedLocation(uri: Uri, networks: List<WifiNetwork>) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // Create CSV content
                 val csvContent = generateCsvContent(networks)
-                val fileName = "wifiharvest_export_${System.currentTimeMillis()}.csv"
-                val file = File(requireContext().getExternalFilesDir(null), fileName)
 
-                file.writeText(csvContent)
+                // Write to user-selected location
+                requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    outputStream.write(csvContent.toByteArray())
+                }
 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         requireContext(),
-                        "Saved ${networks.size} networks to $fileName",
+                        "Successfully saved ${networks.size} networks to selected location",
                         Toast.LENGTH_LONG
                     ).show()
+                    Log.d("LiveFeedFragment", "Saved ${networks.size} networks to user-selected location")
                 }
 
             } catch (e: Exception) {
-                Log.e("LiveFeedFragment", "Error saving to device", e)
+                Log.e("LiveFeedFragment", "Error saving to user-selected location", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         requireContext(),
@@ -328,8 +374,8 @@ class LiveFeedFragment : Fragment() {
     private fun generateCsvContent(networks: List<WifiNetwork>): String {
         val csvBuilder = StringBuilder()
 
-        // Header
-        csvBuilder.appendLine("SSID,BSSID,Latitude,Longitude,Physical address")
+        // Updated header to include Signal
+        csvBuilder.appendLine("SSID,BSSID,Latitude,Longitude,Signal,Physical address")
 
         // Data rows
         networks.forEach { network ->
@@ -337,9 +383,10 @@ class LiveFeedFragment : Fragment() {
             val bssid = network.bssid
             val lat = network.lat
             val lng = network.lng
+            val signal = network.signal
             val address = (network.location ?: "Unknown").replace(",", ";")
 
-            csvBuilder.appendLine("\"$ssid\",\"$bssid\",$lat,$lng,\"$address\"")
+            csvBuilder.appendLine("\"$ssid\",\"$bssid\",$lat,$lng,$signal,\"$address\"")
         }
 
         return csvBuilder.toString()

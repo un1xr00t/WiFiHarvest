@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.Geocoder
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Handler
@@ -19,12 +20,11 @@ import com.app.wifiharvest.SharedWifiViewModel
 import kotlin.math.*
 import com.app.wifiharvest.WifiScanListener
 import kotlinx.coroutines.*
-import android.location.Geocoder
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 private const val LOCATION_CLUSTER_RADIUS_METERS = 10f // Reduced from 30m
-private const val MIN_SCAN_INTERVAL_MS = 30000L // 30 seconds minimum between scans
+private const val MIN_SCAN_INTERVAL_MS = 10000L // 10 seconds minimum between scans (reduced from 30)
 private const val MAX_SCAN_ATTEMPTS = 4 // Max scans per 2-minute window
 private const val SCAN_RESET_WINDOW_MS = 120000L // 2 minutes in milliseconds
 
@@ -55,7 +55,8 @@ class WifiScanner(
     private val addressCache = ConcurrentHashMap<String, String>()
     private val geocodingQueue = mutableListOf<WifiNetwork>()
     private var isGeocodingActive = false
-    private val geocodingDelay = 1000L // 1 second between geocoding requests
+    private val geocodingDelay = 500L // Reduced to 0.5 seconds between geocoding requests
+    private val maxCacheDistance = 100.0 // Cache addresses within 100 meters
 
     // BroadcastReceiver to listen for scan results
     private val wifiScanReceiver = object : BroadcastReceiver() {
@@ -225,8 +226,7 @@ class WifiScanner(
             }
 
             // Check if we have a cached address for this approximate location
-            val locationKey = "${lat.toInt()}.${lng.toInt()}"
-            val cachedAddress = addressCache[locationKey]
+            val nearbyAddress = findNearbyAddress(lat, lng)
 
             val network = WifiNetwork(
                 ssid = result.SSID ?: "",
@@ -235,7 +235,7 @@ class WifiScanner(
                 lat = lat,
                 lng = lng,
                 timestamp = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date()),
-                location = cachedAddress ?: "Loading address..."
+                location = nearbyAddress ?: "Loading address..."
             )
 
             currentLog.add(0, network)
@@ -250,11 +250,12 @@ class WifiScanner(
             Log.d("WifiScanner", "✓ Added network to ViewModel (${viewModel.hashCode()}): ${network.ssid} (${network.bssid})")
 
             // Add to geocoding queue if we don't have a cached address
-            if (cachedAddress == null) {
+            if (nearbyAddress == null) {
                 synchronized(geocodingQueue) {
-                    geocodingQueue.add(network)
+                    // Prioritize queue - add to front for faster processing
+                    geocodingQueue.add(0, network)
                 }
-                Log.d("WifiScanner", "Added ${network.ssid} to geocoding queue")
+                Log.d("WifiScanner", "Added ${network.ssid} to geocoding queue (priority)")
             }
 
             scanListener.onNewNetworkFound(
@@ -274,6 +275,30 @@ class WifiScanner(
         }
     }
 
+    private fun findNearbyAddress(lat: Double, lng: Double): String? {
+        // Check if we have an address cached within maxCacheDistance meters
+        for ((locationKey, address) in addressCache) {
+            try {
+                val parts = locationKey.split(",")
+                if (parts.size == 2) {
+                    val cachedLat = parts[0].toDouble()
+                    val cachedLng = parts[1].toDouble()
+
+                    val results = FloatArray(1)
+                    Location.distanceBetween(lat, lng, cachedLat, cachedLng, results)
+
+                    if (results[0] <= maxCacheDistance) {
+                        Log.d("WifiScanner", "Using cached address from ${results[0].toInt()}m away: $address")
+                        return address
+                    }
+                }
+            } catch (e: Exception) {
+                // Skip invalid cache entries
+            }
+        }
+        return null
+    }
+
     private fun startGeocodingProcessor() {
         geocodingScope.launch {
             isGeocodingActive = true
@@ -284,13 +309,17 @@ class WifiScanner(
 
                 if (networkToGeocode != null) {
                     try {
-                        Log.d("WifiScanner", "Geocoding ${networkToGeocode.ssid}...")
+                        Log.d("WifiScanner", "Geocoding ${networkToGeocode.ssid}... (${geocodingQueue.size} remaining)")
                         val address = geocodeLocation(networkToGeocode.lat, networkToGeocode.lng)
 
                         if (address != null) {
-                            // Cache the address for this general location
-                            val locationKey = "${networkToGeocode.lat.toInt()}.${networkToGeocode.lng.toInt()}"
+                            // Cache the address using precise coordinates for better accuracy
+                            val locationKey = "${networkToGeocode.lat},${networkToGeocode.lng}"
                             addressCache[locationKey] = address
+
+                            // Also cache for approximate location for faster lookup
+                            val approximateKey = "${networkToGeocode.lat.toInt()}.${networkToGeocode.lng.toInt()}"
+                            addressCache[approximateKey] = address
 
                             // Update the network
                             updateNetworkAddress(networkToGeocode, address)
@@ -301,7 +330,7 @@ class WifiScanner(
                             Log.w("WifiScanner", "Failed to geocode ${networkToGeocode.ssid}")
                         }
 
-                        // Rate limiting - wait between requests
+                        // Reduced rate limiting - wait between requests
                         delay(geocodingDelay)
 
                     } catch (e: Exception) {
@@ -310,7 +339,7 @@ class WifiScanner(
                     }
                 } else {
                     // No networks to geocode, wait a bit
-                    delay(5000)
+                    delay(2000) // Reduced from 5000ms
                 }
             }
         }
@@ -325,23 +354,35 @@ class WifiScanner(
                 }
 
                 val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(lat, lng, 1)
 
-                val address = addresses?.firstOrNull()
-                when {
-                    address?.getAddressLine(0) != null -> address.getAddressLine(0)
-                    address?.thoroughfare != null -> {
-                        val street = address.thoroughfare
-                        val city = address.locality ?: address.subAdminArea
-                        if (city != null) "$street, $city" else street
+                // Use timeout to prevent hanging
+                withTimeout(10000) { // 10 second timeout
+                    try {
+                        val addresses = geocoder.getFromLocation(lat, lng, 1)
+
+                        val address = addresses?.firstOrNull()
+                        when {
+                            address?.getAddressLine(0) != null -> address.getAddressLine(0)
+                            address?.thoroughfare != null -> {
+                                val street = address.thoroughfare
+                                val city = address.locality ?: address.subAdminArea
+                                if (city != null) "$street, $city" else street
+                            }
+                            address?.locality != null -> address.locality
+                            address?.subAdminArea != null -> address.subAdminArea
+                            address?.adminArea != null -> address.adminArea
+                            else -> null
+                        }
+                    } catch (e: Exception) {
+                        Log.e("WifiScanner", "Geocoding inner exception for $lat,$lng", e)
+                        null
                     }
-                    address?.locality != null -> address.locality
-                    address?.subAdminArea != null -> address.subAdminArea
-                    address?.adminArea != null -> address.adminArea
-                    else -> null
                 }
+            } catch (e: TimeoutCancellationException) {
+                Log.w("WifiScanner", "Geocoding timeout for $lat,$lng")
+                null
             } catch (e: Exception) {
-                Log.e("WifiScanner", "Geocoding exception", e)
+                Log.e("WifiScanner", "Geocoding exception for $lat,$lng", e)
                 null
             }
         }
