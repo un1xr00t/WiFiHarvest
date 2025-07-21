@@ -3,6 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.0"
 }
 
+// Move keystore loading AFTER plugins block
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace 'com.app.wifiharvest'
     compileSdk 34
@@ -22,8 +29,10 @@ android {
         }
 
         release {
-            // Use the hardcoded API key in AndroidManifest.xml
-            minifyEnabled false
+            // Use keystore.properties for secure release
+            manifestPlaceholders["MAPS_API_KEY"] = keystoreProperties['MAPS_API_KEY'] ?: ""
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
