@@ -1,5 +1,9 @@
 package com.app.wifiharvest.fragments
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +30,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import com.app.wifiharvest.WifiViewModelHolder
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class LiveFeedFragment : Fragment() {
 
@@ -44,6 +51,17 @@ class LiveFeedFragment : Fragment() {
     private val autoSaveHandler = Handler(Looper.getMainLooper())
     private val autoSaveInterval = 30000L // 30 seconds
     private var isAutoSaving = false
+
+    // File picker for CSV import
+    private val csvPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                loadCsvFile(uri)
+            }
+        }
+    }
 
     private val autoSaveRunnable = object : Runnable {
         override fun run() {
@@ -107,19 +125,224 @@ class LiveFeedFragment : Fragment() {
 
         binding.exportButton.setOnClickListener {
             Log.d("LiveFeedFragment", "Export button clicked")
-            exportCurrentData()
+            showExportOptions()
         }
 
-        // Debug button with multiple functions
-        binding.btnLoadCsv.text = "Debug & Test"
+        // Restore CSV loading functionality with debug option
+        binding.btnLoadCsv.text = "Load CSV / Debug"
         binding.btnLoadCsv.setOnClickListener {
-            debugDataFlow()
+            showLoadCsvOrDebugOptions()
         }
 
         // Initial button states
         binding.stopScanButton.isEnabled = false
         binding.startScanButton.text = "Start Scanning"
         Log.d("LiveFeedFragment", "Buttons setup complete")
+    }
+
+    private fun showLoadCsvOrDebugOptions() {
+        val options = arrayOf("Load CSV File", "Debug Data Flow", "Add Test Network")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Choose Action")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> openCsvFilePicker()
+                    1 -> debugDataFlow()
+                    2 -> addTestNetwork()
+                }
+            }
+            .show()
+    }
+
+    private fun openCsvFilePicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "text/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("text/csv", "text/comma-separated-values"))
+        }
+        csvPickerLauncher.launch(Intent.createChooser(intent, "Select CSV File"))
+    }
+
+    private fun loadCsvFile(uri: Uri) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val inputStream = requireContext().contentResolver.openInputStream(uri)
+                val reader = BufferedReader(InputStreamReader(inputStream))
+
+                var lineCount = 0
+                var importedCount = 0
+                var line: String?
+
+                // Skip header line
+                reader.readLine()
+
+                while (reader.readLine().also { line = it } != null) {
+                    lineCount++
+                    line?.let { csvLine ->
+                        val parts = csvLine.split(",").map { it.trim().removeSurrounding("\"") }
+
+                        if (parts.size >= 4) {
+                            try {
+                                val network = WifiNetwork(
+                                    ssid = parts[0],
+                                    bssid = parts[1],
+                                    signal = -50, // Default signal strength
+                                    lat = parts[2].toDouble(),
+                                    lng = parts[3].toDouble(),
+                                    timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+                                    location = if (parts.size > 4) parts[4] else "Imported from CSV"
+                                )
+
+                                withContext(Dispatchers.Main) {
+                                    viewModel.addNetwork(network)
+                                }
+                                importedCount++
+
+                            } catch (e: NumberFormatException) {
+                                Log.w("LiveFeedFragment", "Invalid coordinates in line $lineCount: $csvLine")
+                            }
+                        } else {
+                            Log.w("LiveFeedFragment", "Invalid CSV format in line $lineCount: $csvLine")
+                        }
+                    }
+                }
+
+                reader.close()
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Imported $importedCount networks from CSV",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.d("LiveFeedFragment", "CSV import completed: $importedCount/$lineCount networks imported")
+                }
+
+            } catch (e: Exception) {
+                Log.e("LiveFeedFragment", "Error loading CSV file", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error loading CSV: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun showExportOptions() {
+        val networks = viewModel.networks.value
+        if (networks.isNullOrEmpty()) {
+            Toast.makeText(context, "No networks to export", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val options = arrayOf("Save to Device", "Share")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Export ${networks.size} Networks")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> saveToDevice(networks)
+                    1 -> shareNetworks(networks)
+                }
+            }
+            .show()
+    }
+
+    private fun saveToDevice(networks: List<WifiNetwork>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Create CSV content
+                val csvContent = generateCsvContent(networks)
+                val fileName = "wifiharvest_export_${System.currentTimeMillis()}.csv"
+                val file = File(requireContext().getExternalFilesDir(null), fileName)
+
+                file.writeText(csvContent)
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Saved ${networks.size} networks to $fileName",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+            } catch (e: Exception) {
+                Log.e("LiveFeedFragment", "Error saving to device", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error saving file: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun shareNetworks(networks: List<WifiNetwork>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Create CSV content
+                val csvContent = generateCsvContent(networks)
+                val fileName = "wifiharvest_export_${System.currentTimeMillis()}.csv"
+                val file = File(requireContext().cacheDir, fileName)
+
+                file.writeText(csvContent)
+
+                withContext(Dispatchers.Main) {
+                    // Create share intent
+                    val uri = androidx.core.content.FileProvider.getUriForFile(
+                        requireContext(),
+                        "${requireContext().packageName}.provider",
+                        file
+                    )
+
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/csv"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        putExtra(Intent.EXTRA_SUBJECT, "WiFiHarvest Export - ${networks.size} Networks")
+                        putExtra(Intent.EXTRA_TEXT, "WiFi networks exported from WiFiHarvest app")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+
+                    startActivity(Intent.createChooser(shareIntent, "Share Networks"))
+                }
+
+            } catch (e: Exception) {
+                Log.e("LiveFeedFragment", "Error sharing networks", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error sharing: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun generateCsvContent(networks: List<WifiNetwork>): String {
+        val csvBuilder = StringBuilder()
+
+        // Header
+        csvBuilder.appendLine("SSID,BSSID,Latitude,Longitude,Physical address")
+
+        // Data rows
+        networks.forEach { network ->
+            val ssid = network.ssid.replace(",", ";") // Replace commas to avoid CSV issues
+            val bssid = network.bssid
+            val lat = network.lat
+            val lng = network.lng
+            val address = (network.location ?: "Unknown").replace(",", ";")
+
+            csvBuilder.appendLine("\"$ssid\",\"$bssid\",$lat,$lng,\"$address\"")
+        }
+
+        return csvBuilder.toString()
     }
 
     private fun debugDataFlow() {
@@ -146,21 +369,23 @@ class LiveFeedFragment : Fragment() {
         // 3. Check adapter
         Log.d("LiveFeedFragment", "Adapter item count: ${adapter.itemCount}")
 
-        // 4. Add test network to verify UI updates
+        Toast.makeText(context, "Debug info logged - check logcat", Toast.LENGTH_LONG).show()
+    }
+
+    private fun addTestNetwork() {
         val testNetwork = WifiNetwork(
-            ssid = "DEBUG-${System.currentTimeMillis()}",
-            bssid = "DE:BU:G0:00:00:${(0..99).random().toString().padStart(2, '0')}",
+            ssid = "TEST-${System.currentTimeMillis()}",
+            bssid = "TE:ST:00:00:00:${(0..99).random().toString().padStart(2, '0')}",
             signal = -50,
             lat = 40.3872 + (Math.random() - 0.5) * 0.001, // Slight variation
             lng = -80.0452 + (Math.random() - 0.5) * 0.001,
             timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
-            location = "Debug Location"
+            location = "Test Location"
         )
 
-        Log.d("LiveFeedFragment", "Adding debug network: ${testNetwork.ssid}")
-        fragmentViewModel.addNetwork(testNetwork)
-
-        Toast.makeText(context, "Debug info logged - check logcat", Toast.LENGTH_LONG).show()
+        Log.d("LiveFeedFragment", "Adding test network: ${testNetwork.ssid}")
+        viewModel.addNetwork(testNetwork)
+        Toast.makeText(context, "Added test network: ${testNetwork.ssid}", Toast.LENGTH_SHORT).show()
     }
 
     private fun observeNetworks() {
