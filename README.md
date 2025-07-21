@@ -192,7 +192,7 @@ The app requires the following permissions for full functionality:
 <div align="center">
   <img width="300" alt="WiFiHarvest Live Feed" src="https://github.com/user-attachments/assets/f5f900c6-3e6d-4bdf-93dd-c1a3a59442fa" />
   <img width="300" alt="WiFiHarvest Map View" src="https://github.com/user-attachments/assets/6337ff9a-3838-4969-926f-08c2a3d963f6" />
-  <img width="300" alt="WiFiHarvest Analytics Dashboard" src="https://github.com/user-attachments/assets/b3abbb7b-94e6-4d67-a82b-fbb4ce2d1259" />
+  <img width="300" alt="WiFiHarvest Analytics Dashboard" src="https://github.com/user-attachments/assets/b3abbb7b-94e6-4d67-a82b-fbb4ce2d1259](https://github.com/user-attachments/assets/97ded257-d032-412b-a264-caf79b46305c" />
 </div>
 
 ---
