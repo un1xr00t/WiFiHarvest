@@ -97,12 +97,14 @@
 "Stop Scanning"        →    "ABORT OPERATION"  
 "Export"               →    "EXTRACT INTEL"
 "Load CSV"             →    "IMPORT DATA"
-
 fsociety Mode:
 "INITIATE RECONNAISSANCE" → "INITIATE REVOLUTION"
 "EXTRACT INTEL"           → "LEAK CLASSIFIED INTEL"
 "IMPORT DATA"             → "INJECT INTEL"
 </code></pre>
+
+<img src="https://github.com/user-attachments/assets/b0d135af-9ed4-426e-aaa2-4a331ce88258" alt="WiFiHarvest UI Screenshot" width="500"/>
+
 <hr>
 <h2>🔥 Breaking Changes from v1.0</h2>
 <h3><strong>🎨 Complete UI Redesign</strong></h3>
