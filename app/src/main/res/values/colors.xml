@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mr. Robot Core Palette -->
+    <color name="mr_robot_green">#00FF41</color>
+    <color name="terminal_green">#00FF00</color>
+    <color name="mr_robot_cyan">#00FFFF</color>
+    <color name="fsociety_red">#FF0000</color>
+    <color name="darlene_cyan">#00FFFF</color>
+
+    <!-- Background Colors -->
+    <color name="terminal_black">#0A0A0A</color>
+    <color name="dark_army_gray">#1A1A1A</color>
+    <color name="panel_dark">#111111</color>
+
+    <!-- Text Colors -->
+    <color name="terminal_white">#FFFFFF</color>
+    <color name="system_orange">#FF8C00</color>
+
+    <!-- Status Colors -->
+    <color name="status_success">#39FF14</color>
+    <color name="status_warning">#FF8C00</color>
+    <color name="status_error">#FF0080</color>
+
+    <!-- Interactive Elements -->
+    <color name="button_background">#222222</color>
+    <color name="button_pressed">#333333</color>
+</resources>

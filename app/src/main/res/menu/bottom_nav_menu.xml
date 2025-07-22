@@ -1,15 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_feed"
         android:icon="@android:drawable/ic_menu_view"
-        android:title="Feed" />
+        android:title="RECON" />
     <item
         android:id="@+id/nav_map"
         android:icon="@android:drawable/ic_menu_mapmode"
-        android:title="Map" />
+        android:title="TARGETS" />
     <item
         android:id="@+id/nav_analytics"
         android:icon="@mipmap/ic_launcher"
-        android:title="Analytics" />
-
+        android:title="INTEL" />
 </menu>

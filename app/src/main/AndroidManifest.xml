@@ -27,6 +27,9 @@
     <!-- Internet permission (if you plan to upload data) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Notifications permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!-- Hardware features -->
     <uses-feature
         android:name="android.hardware.wifi"

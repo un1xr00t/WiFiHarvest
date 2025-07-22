@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/terminal_background"
+    android:padding="12dp">
+
+    <!-- Main terminal prompt line -->
+    <TextView
+        android:id="@+id/terminalPrompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="┌─[elliot@wifiharvest]─[~/reconnaissance]"
+        android:textColor="#00FF41"
+        android:textSize="14sp"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.05"
+        android:textStyle="bold" />
+
+    <!-- Network discovery stats -->
+    <TextView
+        android:id="@+id/networkStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="├─TARGETS_ACQUIRED: 0"
+        android:textColor="#00FF41"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.05"
+        android:layout_marginTop="2dp" />
+
+    <!-- Signal strength indicator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="├─SIGNAL_ANALYSIS: "
+            android:textColor="#00FF41"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:id="@+id/signalBars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="████████░░"
+            android:textColor="#00FF41"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.02" />
+
+        <TextView
+            android:id="@+id/signalPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 80%"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05" />
+    </LinearLayout>
+
+    <!-- GPS coordinates -->
+    <TextView
+        android:id="@+id/gpsCoords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="├─GPS_LOCK: [ACQUIRING...]"
+        android:textColor="#00FF41"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.05"
+        android:layout_marginTop="2dp" />
+
+    <!-- Scan duration -->
+    <TextView
+        android:id="@+id/scanDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="├─OPERATION_TIME: 00:00:00"
+        android:textColor="#00FF41"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.05"
+        android:layout_marginTop="2dp" />
+
+    <!-- Status line with glitch effect -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="└─STATUS: "
+            android:textColor="#00FF41"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[IDLE]"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05"
+            android:background="@drawable/glitch_background" />
+    </LinearLayout>
+
+    <!-- ASCII network topology (optional) -->
+    <TextView
+        android:id="@+id/networkTopology"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="    ◦───●───◦───●───◦"
+        android:textColor="#00FFFF"
+        android:textSize="10sp"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.1"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

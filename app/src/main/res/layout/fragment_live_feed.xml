@@ -4,40 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:background="#000000">
 
-    <Button
-        android:id="@+id/startScanButton"
+    <!-- NEW: Mr. Robot Terminal Banner -->
+    <include layout="@layout/terminal_banner"
+        android:id="@+id/terminalBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Existing content with updated styling -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Scanning"
-        android:textAllCaps="false"
-        android:textColor="#00FF00"
-        android:backgroundTint="#222222" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/stopScanButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Stop Scanning"
-        android:textAllCaps="false"
-        android:textColor="#FF0000"
-        android:backgroundTint="#222222"
-        android:layout_marginTop="8dp" />
+        <Button
+            android:id="@+id/startScanButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="INITIATE RECONNAISSANCE"
+            android:textAllCaps="false"
+            android:textColor="#00FF00"
+            android:backgroundTint="#222222"
+            android:fontFamily="monospace" />
 
+        <Button
+            android:id="@+id/stopScanButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ABORT OPERATION"
+            android:textAllCaps="false"
+            android:textColor="#FF0000"
+            android:backgroundTint="#222222"
+            android:layout_marginTop="8dp"
+            android:fontFamily="monospace" />
 
-    <Button
-        android:id="@+id/exportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Export" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-    <Button
-        android:id="@+id/btnLoadCsv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Load CSV" />
+            <Button
+                android:id="@+id/exportButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="EXTRACT INTEL"
+                android:textColor="#00FFFF"
+                android:backgroundTint="#222222"
+                android:fontFamily="monospace"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btnLoadCsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="IMPORT DATA"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#222222"
+                android:fontFamily="monospace"
+                android:layout_marginStart="4dp" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -47,4 +79,5 @@
         android:layout_marginTop="12dp"
         android:padding="8dp"
         android:background="#111111"/>
+
 </LinearLayout>
