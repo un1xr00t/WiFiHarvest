@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#000000"
+    android:padding="8dp">
+
+    <!-- Title with terminal styling -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/notificationTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="WiFiHarvest [ACTIVE]"
+            android:textColor="#00FF41"
+            android:textSize="14sp"
+            android:fontFamily="monospace"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/scanTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="monospace" />
+    </LinearLayout>
+
+    <!-- Main status content -->
+    <TextView
+        android:id="@+id/notificationContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="└─STATUS: [RECONNAISSANCE_ACTIVE]"
+        android:textColor="#00FF41"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:layout_marginTop="2dp" />
+
+    <!-- Stats row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/networkCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TARGETS: 0"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIGNAL: "
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:fontFamily="monospace" />
+
+        <ProgressBar
+            android:id="@+id/signalProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="60dp"
+            android:layout_height="12dp"
+            android:layout_gravity="center_vertical"
+            android:max="100"
+            android:progress="80"
+            android:progressTint="#00FF41"
+            android:progressBackgroundTint="#333333" />
+    </LinearLayout>
+
+    <!-- Separator line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#00FF41"
+        android:layout_marginTop="4dp"
+        android:alpha="0.5" />
+
+</LinearLayout>
