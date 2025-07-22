@@ -5,7 +5,7 @@
 <p>WiFiHarvest has been completely reimagined with an authentic Mr. Robot aesthetic, advanced persistent notifications, and hidden easter eggs that would make Elliot Alderson himself proud. This isn't just an update - it's a complete revolution in wardriving technology.</p>
 <hr>
 <h2>📱 Download</h2>
-<p><strong><a href="https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0.0/app-release.apk">⬇️ Download WiFiHarvest v2.0.0 "Mr. Robot Edition" APK</a></strong></p>
+<p><strong><a href="https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0/app-release.apk">⬇️ Download WiFiHarvest v2.0 "Mr. Robot Edition" APK</a></strong></p>
 <h3>📋 Requirements</h3>
 <ul>
 <li><strong>Android 5.0+</strong> (API 21+)</li>
@@ -41,7 +41,7 @@
 <li><strong>⚡ Glitch Effects</strong> - Visual corruption animations in fsociety mode</li>
 </ul>
 <hr>
-<h2>🆕 What's New in v2.0.0</h2>
+<h2>🆕 What's New in v2.0</h2>
 <h3>🎯 <strong>Enhanced User Experience</strong></h3>
 <ul>
 <li><strong>Real-Time Terminal Banner</strong> - Live updates every second with:
@@ -93,7 +93,7 @@
 <li><strong>Professional Dark Theme</strong> - Easy on the eyes during night operations</li>
 </ul>
 <h3><strong>Button &amp; UI Transformations</strong></h3>
-<pre><code>BEFORE (v1.0)          →    AFTER (v2.0)
+<pre><code>BEFORE (v1.0)          →    AFTER (2.0)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 "Start Scanning"       →    "INITIATE RECONNAISSANCE"
 "Stop Scanning"        →    "ABORT OPERATION"  
@@ -242,7 +242,7 @@ The fsociety mode is purely cosmetic and does not change the app's functionality
 <hr>
 <h2>🎯 Version Comparison</h2>
 
-Feature | v1.0 | v2.0.0 "Mr. Robot Edition"
+Feature | v1.0 | v2.0 "Mr. Robot Edition"
 -- | -- | --
 UI Theme | Material Design 3 | Terminal Hacker Aesthetic
 Notifications | Basic foreground | Advanced persistent lock screen
@@ -291,14 +291,14 @@ Terminal Banner | None | Real-time command interface
 <h2>📄 License &amp; Legal</h2>
 <p><strong>License:</strong> MIT License - See <a>LICENSE</a> file for details</p>
 <p><strong>⚠️ IMPORTANT - Responsible Use:</strong>
-WiFiHarvest v2.0.0 remains a <strong>passive reconnaissance tool</strong> for educational and authorized security research purposes. The Mr. Robot theming is purely aesthetic and does not change the app's ethical use guidelines.</p>
+WiFiHarvest v2.0 remains a <strong>passive reconnaissance tool</strong> for educational and authorized security research purposes. The Mr. Robot theming is purely aesthetic and does not change the app's ethical use guidelines.</p>
 <p><strong>🎭 fsociety Mode Disclaimer:</strong>
 The fsociety easter egg mode is entertainment-focused and does not enable any additional functionality beyond cosmetic changes. All scanning remains passive, legal, and ethical.</p>
 <hr>
 <h2>🚀 Installation &amp; Upgrade</h2>
 <h3><strong>Fresh Installation:</strong></h3>
 <ol>
-<li>Download WiFiHarvest v2.0.0 APK</li>
+<li>Download WiFiHarvest v2.0 APK</li>
 <li>Install and grant required permissions</li>
 <li><strong>Try the Konami code</strong>: <code>↑↑↓↓←→←→BA</code> (volume buttons work!)</li>
 <li>Long press the terminal banner for a surprise</li>
@@ -323,8 +323,8 @@ The fsociety easter egg mode is entertainment-focused and does not enable any ad
 <hr>
 <p><strong>🎭 Hello, friend. Welcome to the revolution.</strong></p>
 <p><em>"Power belongs to the people. And we are the people."</em></p>
-<p><strong>WiFiHarvest v2.0.0 "Mr. Robot Edition" - The Ultimate Hacker Wardriving Experience</strong></p>
-<p><em>📡🎭💀 Ready to hack the planet? 🔓⚡🚀</em></p></body></html># 🎭 WiFiHarvest v2.0.0 "Mr. Robot Edition" - Release Notes
+<p><strong>WiFiHarvest v2.0 "Mr. Robot Edition" - The Ultimate Hacker Wardriving Experience</strong></p>
+<p><em>📡🎭💀 Ready to hack the planet? 🔓⚡🚀</em></p></body></html># 🎭 WiFiHarvest v2.0 "Mr. Robot Edition" - Release Notes
 
 **🔥 THE REVOLUTION IS HERE! Complete transformation to the ultimate hacker experience!**
 
@@ -334,7 +334,7 @@ WiFiHarvest has been completely reimagined with an authentic Mr. Robot aesthetic
 
 ## 📱 Download
 
-**[[⬇️ Download WiFiHarvest v2.0.0 "Mr. Robot Edition" APK](https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0.0/app-release.apk)](https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0.0/app-release.apk)**
+**[[⬇️ Download WiFiHarvest v2.0 "Mr. Robot Edition" APK](https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0.0/app-release.apk)](https://github.com/un1xr00t/WiFiHarvest/releases/download/v2.0/app-release.apk)**
 
 ### 📋 Requirements
 - **Android 5.0+** (API 21+)
@@ -370,7 +370,7 @@ WiFiHarvest has been completely reimagined with an authentic Mr. Robot aesthetic
 
 ---
 
-## 🆕 What's New in v2.0.0
+## 🆕 What's New in v2.0
 
 ### 🎯 **Enhanced User Experience**
 - **Real-Time Terminal Banner** - Live updates every second with:
@@ -561,7 +561,7 @@ The fsociety mode is purely cosmetic and does not change the app's functionality
 
 ## 🎯 Version Comparison
 
-| Feature | v1.0 | v2.0.0 "Mr. Robot Edition" |
+| Feature | v1.0 | v2.0 "Mr. Robot Edition" |
 |---------|------|---------------------------|
 | **UI Theme** | Material Design 3 | Terminal Hacker Aesthetic |
 | **Notifications** | Basic foreground | Advanced persistent lock screen |
@@ -612,7 +612,7 @@ The fsociety mode is purely cosmetic and does not change the app's functionality
 **License:** MIT License - See [LICENSE](../../blob/main/LICENSE) file for details
 
 **⚠️ IMPORTANT - Responsible Use:**
-WiFiHarvest v2.0.0 remains a **passive reconnaissance tool** for educational and authorized security research purposes. The Mr. Robot theming is purely aesthetic and does not change the app's ethical use guidelines.
+WiFiHarvest v2.0 remains a **passive reconnaissance tool** for educational and authorized security research purposes. The Mr. Robot theming is purely aesthetic and does not change the app's ethical use guidelines.
 
 **🎭 fsociety Mode Disclaimer:**
 The fsociety easter egg mode is entertainment-focused and does not enable any additional functionality beyond cosmetic changes. All scanning remains passive, legal, and ethical.
@@ -622,7 +622,7 @@ The fsociety easter egg mode is entertainment-focused and does not enable any ad
 ## 🚀 Installation & Upgrade
 
 ### **Fresh Installation:**
-1. Download WiFiHarvest v2.0.0 APK
+1. Download WiFiHarvest v2.0 APK
 2. Install and grant required permissions  
 3. **Try the Konami code**: `↑↑↓↓←→←→BA` (volume buttons work!)
 4. Long press the terminal banner for a surprise
@@ -650,6 +650,6 @@ The fsociety easter egg mode is entertainment-focused and does not enable any ad
 
 *"Power belongs to the people. And we are the people."*
 
-**WiFiHarvest v2.0.0 "Mr. Robot Edition" - The Ultimate Hacker Wardriving Experience**
+**WiFiHarvest v2.0 "Mr. Robot Edition" - The Ultimate Hacker Wardriving Experience**
 
 *📡🎭💀 Ready to hack the planet? 🔓⚡🚀*
