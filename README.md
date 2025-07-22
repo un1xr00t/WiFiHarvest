@@ -105,7 +105,11 @@ fsociety Mode:
 "IMPORT DATA"             → "INJECT INTEL"
 </code></pre>
 
-<img src="https://github.com/user-attachments/assets/b0d135af-9ed4-426e-aaa2-4a331ce88258" alt="WiFiHarvest UI Screenshot" width="500"/>
+<div align="center">
+  <img width="300" alt="WiFiHarvest Mr. Robot Terminal Interface" src="https://github.com/user-attachments/assets/955bd468-6d7e-4a55-b6e2-0b416fd5234f" />
+  <img width="300" alt="WiFiHarvest fsociety Mode Active" src="https://github.com/user-attachments/assets/04eccae6-d5f9-4f1c-b9e5-e18ea4ef34d8" />
+  <img width="300" alt="WiFiHarvest Lock Screen Notification" src="https://github.com/user-attachments/assets/737fe84b-0d85-42c0-b4c2-557fc0e15150" />
+</div>
 
 <hr>
 <h2>🔥 Breaking Changes from v1.0</h2>
