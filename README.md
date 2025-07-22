@@ -1,4 +1,4 @@
-<html><head></head><body><h1>🎭 WiFiHarvest v2.0.0 "Mr. Robot Edition" - Release Notes</h1>
+<html><head></head><body><h1>🎭 WiFiHarvest v2.0 "Mr. Robot Edition" - Release Notes</h1>
 <p><strong>🔥 THE REVOLUTION IS HERE! Complete transformation to the ultimate hacker experience!</strong></p>
 <p>WiFiHarvest has been completely reimagined with an authentic Mr. Robot aesthetic, advanced persistent notifications, and hidden easter eggs that would make Elliot Alderson himself proud. This isn't just an update - it's a complete revolution in wardriving technology.</p>
 <hr>
